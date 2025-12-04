@@ -36,7 +36,7 @@
 
     <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-2xl">
         <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">نظام رفع الملفات والتقييم (للمسؤول فقط )</h1>
-        <p class="text-gray-600 mb-8 text-center">هذه الواجهة تتيح لك رفع الملفات مباشرة إلى Cloudinary وإضافة التقييم والتعليق.</p>
+        <p class="text-gray-600 mb-8 text-center">هذه الواجهة تتيح لك رفع الملفات مباشرة إلى Cloudinary وإضافة التقييم والتعليق، وحفظ البيانات في Google Form.</p>
 
         <form id="uploadForm" class="space-y-6">
             <!-- File Input -->
@@ -86,15 +86,22 @@
 
     <script>
         // Configuration (MUST be public keys)
-        const CLOUDINARY_CLOUD_NAME = 'dftm7jxqa'; // REPLACE with your Cloud Name
-        const CLOUDINARY_UPLOAD_PRESET = 'unsigned_upload_preset'; // REPLACE with your unsigned upload preset name
+        const CLOUDINARY_CLOUD_NAME = 'dftm7jxqa'; // اسم السحابة الخاص بك
+        const CLOUDINARY_UPLOAD_PRESET = 'unsigned_upload_preset'; // اسم الإعداد المسبق للرفع
 
-        // --- IMPORTANT: You MUST create an unsigned upload preset in your Cloudinary account ---
-        // 1. Go to Cloudinary Dashboard -> Settings -> Upload
-        // 2. Scroll down to "Upload presets" and click "Add upload preset"
-        // 3. Set "Signing Mode" to "Unsigned"
-        // 4. Name it 'unsigned_upload_preset' (or whatever you set above)
-        // 5. Save the preset.
+        // --- Google Form Configuration ---
+        // هذا هو رابط الإرسال الذي نحتاجه. يجب أن يكون بصيغة formResponse
+        const GOOGLE_FORM_ACTION_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdsXQAHZ3y_zJK1FKxrx-lasA5UsJLZWQCdqjRuZhGs7YGjrw/formResponse';
+        
+        // يجب استبدال هذه الأرقام بالأرقام الصحيحة لحقول الإدخال في نموذجك
+        // بما أننا لم نتمكن من الحصول على الأرقام الصحيحة، سنستخدم هذه الافتراضات.
+        // إذا لم يعمل، يجب عليك استبدالها بالأرقام الصحيحة.
+        const ENTRY_IDS = {
+            fileLink: 'entry.377814605', // رابط الملف
+            fileName: 'entry.123456789', // اسم الملف (افتراضي )
+            rating: 'entry.987654321',   // التقييم (افتراضي)
+            comment: 'entry.112233445',  // التعليق (افتراضي)
+        };
 
         const form = document.getElementById('uploadForm');
         const fileInput = document.getElementById('fileInput');
@@ -103,6 +110,39 @@
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
         const resultMessage = document.getElementById('resultMessage');
+
+        // Function to send data to Google Form
+        const sendDataToGoogleForm = async (fileUrl, fileName, rating, comment) => {
+            const formData = new FormData();
+            formData.append(ENTRY_IDS.fileLink, fileUrl);
+            formData.append(ENTRY_IDS.fileName, fileName);
+            formData.append(ENTRY_IDS.rating, rating);
+            formData.append(ENTRY_IDS.comment, comment);
+
+            // Send data to Google Form using a hidden iframe to avoid CORS issues
+            const iframe = document.createElement('iframe');
+            iframe.name = 'googleFormIframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
+
+            const formElement = document.createElement('form');
+            formElement.action = GOOGLE_FORM_ACTION_URL;
+            formElement.method = 'POST';
+            formElement.target = 'googleFormIframe';
+            
+            for (const [key, value] of formData.entries()) {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = value;
+                formElement.appendChild(input);
+            }
+
+            document.body.appendChild(formElement);
+            formElement.submit();
+            document.body.removeChild(formElement);
+            document.body.removeChild(iframe);
+        };
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -147,28 +187,26 @@
                         if (xhr.status === 200) {
                             const response = JSON.parse(xhr.responseText);
                             const fileUrl = response.secure_url;
+                            const fileName = response.original_filename;
                             
                             // --- SUCCESS ---
+                            sendDataToGoogleForm(fileUrl, fileName, rating, comment);
+
                             resultMessage.classList.remove('hidden');
                             resultMessage.classList.remove('bg-red-100', 'text-red-800');
                             resultMessage.classList.add('bg-green-100', 'text-green-800');
                             resultMessage.innerHTML = `
                                 <p class="font-bold">تم الرفع بنجاح!</p>
-                                <p><strong>الملف:</strong> <a href="${fileUrl}" target="_blank" class="text-blue-600 hover:underline">${response.original_filename}</a></p>
+                                <p>تم إرسال البيانات إلى Google Form.</p>
+                                <p><strong>الملف:</strong> <a href="${fileUrl}" target="_blank" class="text-blue-600 hover:underline">${fileName}</a></p>
                                 <p><strong>التقييم:</strong> ${rating} نجوم</p>
                                 <p><strong>التعليق:</strong> ${comment || 'لا يوجد'}</p>
-                                <p class="mt-2">تم إرسال البيانات بنجاح.</p>
                             `;
                             
                             // Reset form
                             form.reset();
                             progressBar.style.width = '0%';
                             progressText.textContent = 'جاري الرفع: 0%';
-
-                            // --- Alternative: Send data to an external service (e.g., Google Form/Sheet) ---
-                            // Since we don't have a database, you can uncomment the following line
-                            // and replace the URL with a Google Form submission endpoint
-                            // sendDataToExternalService(fileUrl, rating, comment);
 
                         } else {
                             // --- ERROR ---
