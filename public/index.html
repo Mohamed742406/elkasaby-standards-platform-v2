@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة محمد القصبي - المعايير الهندسية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .message {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .search-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-section input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .standards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .standard-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .standard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .standard-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .files-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .file-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-info h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+        }
+
+        .close-btn {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #aaa;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin: 10px 0;
+        }
+
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            color: #ddd;
+        }
+
+        .star.active {
+            color: #ffc107;
+        }
+
+        .comments-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .comment {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .comment-date {
+            font-size: 12px;
+            color: #999;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .standards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .file-item {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .file-actions {
+                width: 100%;
+            }
+
+            .file-actions button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏛️ منصة محمد القصبي</h1>
+            <div class="auth-buttons">
+                <button id="loginBtn" class="btn-primary" onclick="openLoginModal()">تسجيل الدخول</button>
+                <button id="registerBtn" class="btn-primary" onclick="openRegisterModal()">إنشاء حساب</button>
+                <button id="adminBtn" class="btn-secondary" onclick="openAdminLoginModal()" style="display:none;">دخول المسؤول</button>
+                <button id="logoutBtn" class="btn-danger" onclick="logout()" style="display:none;">تسجيل الخروج</button>
+                <button id="uploadBtn" class="btn-primary" onclick="openUploadModal()" style="display:none;">رفع ملف</button>
+            </div>
+        </header>
+
+        <div id="message" class="message"></div>
+
+        <!-- Statistics -->
+        <div class="stats" id="statsContainer"></div>
+
+        <!-- Search -->
+        <div class="search-section">
+            <input type="text" id="searchInput" placeholder="ابحث في الملفات...">
+            <button class="btn-primary" onclick="search()">بحث</button>
+        </div>
+
+        <!-- Standards -->
+        <div class="standards-grid" id="standardsContainer"></div>
+
+        <!-- Files -->
+        <div class="files-section" id="filesSection" style="display:none;">
+            <h2 id="filesTitle">الملفات المتاحة</h2>
+            <div id="filesList"></div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>تسجيل الدخول</h2>
+                <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+            </div>
+            <form onsubmit="login(event)">
+                <div class="form-group">
+                    <label>اسم المستخدم:</label>
+                    <input type="text" id="loginUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة السر:</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%;">دخول</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>إنشاء حساب جديد</h2>
+                <span class="close-btn" onclick="closeRegisterModal()">&times;</span>
+            </div>
+            <form onsubmit="register(event)">
+                <div class="form-group">
+                    <label>اسم المستخدم:</label>
+                    <input type="text" id="regUsername" required>
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني:</label>
+                    <input type="email" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة السر:</label>
+                    <input type="password" id="regPassword" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%;">تسجيل</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>دخول المسؤول</h2>
+                <span class="close-btn" onclick="closeAdminLoginModal()">&times;</span>
+            </div>
+            <form onsubmit="adminLogin(event)">
+                <div class="form-group">
+                    <label>كلمة السر:</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%;">دخول</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>رفع ملف جديد</h2>
+                <span class="close-btn" onclick="closeUploadModal()">&times;</span>
+            </div>
+            <form onsubmit="uploadFile(event)">
+                <div class="form-group">
+                    <label>اختار المعيار:</label>
+                    <select id="uploadStandard" required></select>
+                </div>
+                <div class="form-group">
+                    <label>عنوان الملف:</label>
+                    <input type="text" id="uploadTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>وصف الملف:</label>
+                    <textarea id="uploadDescription"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>اختار الملف:</label>
+                    <input type="file" id="uploadFile" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%;">رفع</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let adminToken = null;
+        let currentStandardId = null;
+
+        // ==================== Initialize ====================
+
+        window.addEventListener('load', () => {
+            loadStandards();
+            loadStatistics();
+            const savedUser = localStorage.getItem('user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateAuthUI();
+            }
+            const savedAdminToken = localStorage.getItem('adminToken');
+            if (savedAdminToken) {
+                adminToken = savedAdminToken;
+                updateAuthUI();
+            }
+        });
+
+        // ==================== Authentication ====================
+
+        function openLoginModal() {
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function openRegisterModal() {
+            document.getElementById('registerModal').style.display = 'block';
+        }
+
+        function closeRegisterModal() {
+            document.getElementById('registerModal').style.display = 'none';
+        }
+
+        function openAdminLoginModal() {
+            document.getElementById('adminLoginModal').style.display = 'block';
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+        }
+
+        async function login(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentUser = data.user;
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    closeLoginModal();
+                    updateAuthUI();
+                    showMessage('تم تسجيل الدخول بنجاح', 'success');
+                    document.getElementById('loginUsername').value = '';
+                    document.getElementById('loginPassword').value = '';
+                } else {
+                    showMessage(data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('خطأ في الاتصال', 'error');
+            }
+        }
+
+        async function register(event) {
+            event.preventDefault();
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    closeRegisterModal();
+                    showMessage('تم التسجيل بنجاح! يمكنك الآن تسجيل الدخول', 'success');
+                    document.getElementById('regUsername').value = '';
+                    document.getElementById('regEmail').value = '';
+                    document.getElementById('regPassword').value = '';
+                } else {
+                    showMessage(data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('خطأ في الاتصال', 'error');
+            }
+        }
+
+        async function adminLogin(event) {
+            event.preventDefault();
+            const password = document.getElementById('adminPassword').value;
+
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    adminToken = data.token;
+                    localStorage.setItem('adminToken', adminToken);
+                    closeAdminLoginModal();
+                    updateAuthUI();
+                    showMessage('تم دخول المسؤول بنجاح', 'success');
+                    document.getElementById('adminPassword').value = '';
+                } else {
+                    showMessage(data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('خطأ في الاتصال', 'error');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            adminToken = null;
+            localStorage.removeItem('user');
+            localStorage.removeItem('adminToken');
+            updateAuthUI();
+            showMessage('تم تسجيل الخروج', 'success');
+        }
+
+        function updateAuthUI() {
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const adminBtn = document.getElementById('adminBtn');
+            const uploadBtn = document.getElementById('uploadBtn');
+
+            if (currentUser) {
+                loginBtn.style.display = 'none';
+                registerBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                adminBtn.style.display = 'block';
+            } else {
+                loginBtn.style.display = 'block';
+                registerBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                adminBtn.style.display = 'block';
+            }
+
+            if (adminToken) {
+                uploadBtn.style.display = 'block';
+            } else {
+                uploadBtn.style.display = 'none';
+            }
+        }
+
+        // ==================== Standards & Files ====================
+
+        async function loadStandards() {
+            try {
+                const response = await fetch('/api/standards');
+                const standards = await response.json();
+
+                const container = document.getElementById('standardsContainer');
+                container.innerHTML = '';
+
+                standards.forEach(std => {
+                    const card = document.createElement('div');
+                    card.className = 'standard-card';
+                    card.innerHTML = `
+                        <h3>${std.icon} ${std.name}</h3>
+                        <p>${std.description}</p>
+                        <button class="btn-primary" onclick="loadFiles(${std.id}, '${std.name}')">عرض الملفات</button>
+                    `;
+                    container.appendChild(card);
+                });
+
+                // Load standards for upload dropdown
+                const uploadSelect = document.getElementById('uploadStandard');
+                uploadSelect.innerHTML = '';
+                standards.forEach(std => {
+                    const option = document.createElement('option');
+                    option.value = std.id;
+                    option.textContent = std.name;
+                    uploadSelect.appendChild(option);
+                });
+            } catch (error) {
+                showMessage('خطأ في تحميل المعايير', 'error');
+            }
+        }
+
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/api/statistics');
+                const stats = await response.json();
+
+                const container = document.getElementById('statsContainer');
+                container.innerHTML = '';
+
+                stats.forEach(stat => {
+                    const card = document.createElement('div');
+                    card.className = 'stat-card';
+                    card.innerHTML = `
+                        <h3>${stat.fileCount}</h3>
+                        <p>${stat.icon} ${stat.name}</p>
+                        <small>${stat.fileCount} ملف</small>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        async function loadFiles(standardId, standardName) {
+            try {
+                const response = await fetch(`/api/standards/${standardId}/files`);
+                const files = await response.json();
+
+                const filesSection = document.getElementById('filesSection');
+                const filesList = document.getElementById('filesList');
+                const filesTitle = document.getElementById('filesTitle');
+
+                filesTitle.textContent = `ملفات ${standardName}`;
+                filesList.innerHTML = '';
+
+                if (files.length === 0) {
+                    filesList.innerHTML = '<p>لا توجد ملفات في هذا المعيار</p>';
+                } else {
+                    files.forEach(file => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.innerHTML = `
+                            <div class="file-info">
+                                <h4>${file.title}</h4>
+                                <p>${file.description || 'بدون وصف'}</p>
+                                <small>التحميلات: ${file.downloads}</small>
+                            </div>
+                            <div class="file-actions">
+                                <button class="btn-primary" onclick="downloadFile(${file.id}, '${file.filename}')">تحميل</button>
+                                <button class="btn-secondary" onclick="showFileDetails(${file.id})">التفاصيل</button>
+                                ${adminToken ? `<button class="btn-danger" onclick="deleteFile(${file.id})">حذف</button>` : ''}
+                            </div>
+                        `;
+                        filesList.appendChild(fileItem);
+                    });
+                }
+
+                filesSection.style.display = 'block';
+                filesSection.scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                showMessage('خطأ في تحميل الملفات', 'error');
+            }
+        }
+
+        async function downloadFile(fileId, filename) {
+            try {
+                window.location.href = `/api/files/${fileId}/download`;
+            } catch (error) {
+                showMessage('خطأ في التحميل', 'error');
+            }
+        }
+
+        async function deleteFile(fileId) {
+            if (!confirm('هل أنت متأكد من حذف هذا الملف؟')) return;
+
+            try {
+                const response = await fetch(`/api/files/${fileId}`, {
+                    method: 'DELETE',
+                    headers: { 'x-admin-token': adminToken }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('تم حذف الملف', 'success');
+                    loadFiles(currentStandardId, 'الملفات');
+                } else {
+                    showMessage(data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('خطأ في الحذف', 'error');
+            }
+        }
+
+        // ==================== Upload ====================
+
+        function openUploadModal() {
+            if (!adminToken) {
+                openAdminLoginModal();
+                return;
+            }
+            document.getElementById('uploadModal').style.display = 'block';
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        async function uploadFile(event) {
+            event.preventDefault();
+
+            const standardId = document.getElementById('uploadStandard').value;
+            const title = document.getElementById('uploadTitle').value;
+            const description = document.getElementById('uploadDescription').value;
+            const file = document.getElementById('uploadFile').files[0];
+
+            if (!file) {
+                showMessage('اختار ملف', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('standardId', standardId);
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/files/upload', {
+                    method: 'POST',
+                    headers: { 'x-admin-token': adminToken },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('تم رفع الملف بنجاح', 'success');
+                    closeUploadModal();
+                    document.getElementById('uploadTitle').value = '';
+                    document.getElementById('uploadDescription').value = '';
+                    document.getElementById('uploadFile').value = '';
+                    loadStatistics();
+                } else {
+                    showMessage(data.error, 'error');
+                }
+            } catch (error) {
+                showMessage('خطأ في الرفع', 'error');
+            }
+        }
+
+        // ==================== Search ====================
+
+        async function search() {
+            const query = document.getElementById('searchInput').value;
+
+            if (!query) {
+                showMessage('أدخل كلمة للبحث', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+                const files = await response.json();
+
+                const filesList = document.getElementById('filesList');
+                const filesSection = document.getElementById('filesSection');
+                const filesTitle = document.getElementById('filesTitle');
+
+                filesTitle.textContent = `نتائج البحث عن: ${query}`;
+                filesList.innerHTML = '';
+
+                if (files.length === 0) {
+                    filesList.innerHTML = '<p>لم يتم العثور على نتائج</p>';
+                } else {
+                    files.forEach(file => {
+                        const fileItem = document.createElement('div');
+                        fileItem.className = 'file-item';
+                        fileItem.innerHTML = `
+                            <div class="file-info">
+                                <h4>${file.title}</h4>
+                                <p>${file.description || 'بدون وصف'}</p>
+                            </div>
+                            <div class="file-actions">
+                                <button class="btn-primary" onclick="downloadFile(${file.id}, '${file.filename}')">تحميل</button>
+                                <button class="btn-secondary" onclick="showFileDetails(${file.id})">التفاصيل</button>
+                            </div>
+                        `;
+                        filesList.appendChild(fileItem);
+                    });
+                }
+
+                filesSection.style.display = 'block';
+                filesSection.scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                showMessage('خطأ في البحث', 'error');
+            }
+        }
+
+        // ==================== Utility ====================
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function showFileDetails(fileId) {
+            alert('تفاصيل الملف - سيتم تطويره لاحقاً');
+        }
+
+        window.onclick = function(event) {
+            const loginModal = document.getElementById('loginModal');
+            const registerModal = document.getElementById('registerModal');
+            const adminLoginModal = document.getElementById('adminLoginModal');
+            const uploadModal = document.getElementById('uploadModal');
+
+            if (event.target === loginModal) closeLoginModal();
+            if (event.target === registerModal) closeRegisterModal();
+            if (event.target === adminLoginModal) closeAdminLoginModal();
+            if (event.target === uploadModal) closeUploadModal();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "elkasaby-standards-platform",
+  "version": "2.0.0",
+  "description": "منصة محمد القصبي للمعايير الهندسية",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "echo 'Build complete'"
+  },
+  "keywords": ["ASTM", "ACI", "BS", "standards", "translation"],
+  "author": "Mohamed Elkasaby",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "express-fileupload": "^1.4.0",
+    "better-sqlite3": "^9.2.2",
+    "bcryptjs": "^2.4.3"
+  }
+}
