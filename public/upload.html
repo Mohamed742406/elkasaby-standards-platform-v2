@@ -86,16 +86,16 @@
 
     <script>
         // Configuration (MUST be public keys)
-        const CLOUDINARY_CLOUD_NAME = 'dftm7jxqa'; // اسم السحابة الخاص بك
+        // ----------------------------------------------------------------------------------
+        // 1. تأكد من اسم السحابة (Cloud Name)
+        const CLOUDINARY_CLOUD_NAME = 'dftm7jxqa'; // تأكد أن هذا هو اسم السحابة الخاص بك
+        // ----------------------------------------------------------------------------------
         const CLOUDINARY_UPLOAD_PRESET = 'unsigned_upload_preset'; // اسم الإعداد المسبق للرفع
 
         // --- Google Form Configuration ---
-        // هذا هو رابط الإرسال الذي نحتاجه. يجب أن يكون بصيغة formResponse
         const GOOGLE_FORM_ACTION_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdsXQAHZ3y_zJK1FKxrx-lasA5UsJLZWQCdqjRuZhGs7YGjrw/formResponse';
         
-        // يجب استبدال هذه الأرقام بالأرقام الصحيحة لحقول الإدخال في نموذجك
-        // بما أننا لم نتمكن من الحصول على الأرقام الصحيحة، سنستخدم هذه الافتراضات.
-        // إذا لم يعمل، يجب عليك استبدالها بالأرقام الصحيحة.
+        // هذه الأرقام هي افتراضية. إذا لم يعمل، يجب استبدالها بالأرقام الصحيحة.
         const ENTRY_IDS = {
             fileLink: 'entry.377814605', // رابط الملف
             fileName: 'entry.123456789', // اسم الملف (افتراضي )
@@ -168,7 +168,10 @@
                 formData.append('cloud_name', CLOUDINARY_CLOUD_NAME);
 
                 const xhr = new XMLHttpRequest();
-                xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`, true );
+                // ----------------------------------------------------------------------------------
+                // 2. التعديل المطلوب: تم تغيير auto/upload إلى upload
+                xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, true );
+                // ----------------------------------------------------------------------------------
 
                 xhr.upload.addEventListener('progress', (e) => {
                     if (e.lengthComputable) {
